@@ -147,6 +147,7 @@ multipliers = WebDriverWait(driver, 30).until(
 )
 
 print("starting...")
+send_email("Scrapper Started", f"the scrapper has began scrapping at exactly {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}")
 
 # Initialize set to store seen multipliers
 initial_multipliers = get_multiplier_data()
@@ -193,16 +194,17 @@ while True:
 
         time.sleep(2)
 
-            
         # Check if 3 minutes have passed since the last save
         if datetime.now() - last_saved_time > timedelta(minutes=3):
             print("timeout!")
+            send_email("Timeout", "the code has stopped because it hasnt received a new value in more than 3 minutes!")
             last_saved_time = datetime.now()  # Reset the timer
 
     except StaleElementReferenceException:
         print("StaleElementReferenceException encountered. Re-locating elements.")
     except Exception as e:
         print(f"❌ An error occurred: {e}")
+        send_email("Error", f"❌ an unexpected error occured with this message: \n {e}")
         break
 
 driver.quit()
